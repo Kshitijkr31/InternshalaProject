@@ -10,34 +10,36 @@ function App() {
   const [summary, setSummary] = useState("");
   const [recipient, setRecipient] = useState("");
 
-  const generateSummary = async () => {
-    if (!transcript) return toast.error("Please enter transcript!");
-    try {
-      const res = await axios.post("http://localhost:5000/summarize", {
-        transcript,
-        prompt,
-      });
-      setSummary(res.data.summary);
-      toast.success("Summary generated!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error generating summary!");
-    }
-  };
+  const backendURL = process.env.REACT_APP_BACKEND_URL;
 
-  const sendEmail = async () => {
-    if (!recipient) return toast.error("Please enter recipient email!");
-    try {
-      await axios.post("http://localhost:5000/send-email", {
-        summary,
-        recipient,
-      });
-      toast.success("Email sent successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error sending email!");
-    }
-  };
+  const generateSummary = async () => {
+  if (!transcript) return toast.error("Please enter transcript!");
+  try {
+    const res = await axios.post(`${backendURL}/summarize`, {
+      transcript,
+      prompt,
+    });
+    setSummary(res.data.summary);
+    toast.success("Summary generated!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Error generating summary!");
+  }
+};
+
+const sendEmail = async () => {
+  if (!recipient) return toast.error("Please enter recipient email!");
+  try {
+    await axios.post(`${backendURL}/send-email`, {
+      summary,
+      recipient,
+    });
+    toast.success("Email sent successfully!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Error sending email!");
+  }
+};
 
   return (
     <div className="container">
